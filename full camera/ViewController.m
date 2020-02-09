@@ -33,11 +33,11 @@ UIImagePickerController * imagePickerVC;
     // 设置代理，遵守UINavigationControllerDelegate, UIImagePickerControllerDelegate 协议
     imagePickerVC.delegate = self;
     // 是否允许编辑
-    imagePickerVC.allowsEditing = YES;
+    imagePickerVC.allowsEditing = NO;
     // 如果选择的是视屏，允许的视屏时长为20秒
     imagePickerVC.videoMaximumDuration = 20;
     // 允许的视屏质量（如果质量选取的质量过高，会自动降低质量）
-    imagePickerVC.videoQuality = UIImagePickerControllerQualityTypeHigh;
+    imagePickerVC.videoQuality = UIImagePickerControllerQualityTypeIFrame1280x720;
     // 相机获取媒体的类型（照相、录制视屏）
     imagePickerVC.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     // 使用前置还是后置摄像头
@@ -53,11 +53,16 @@ UIImagePickerController * imagePickerVC;
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
 
     // 调整缩放，铺满屏幕
-    float cameraAspectRatio = 12.0 / 11.0;
+    float cameraAspectRatio = 4.0 / 3.0;
     float oldHeight = floorf(screenSize.width * cameraAspectRatio);
     float scale = ceilf((screenSize.height / oldHeight) * 10.0) / 10.0;
+    // 整体平移
+    float yMove = (screenSize.height - oldHeight) / 2;
+    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yMove);
+    imagePickerVC.cameraViewTransform = translate;
+    // 整体缩放
+    imagePickerVC.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
 
-    imagePickerVC.cameraViewTransform = CGAffineTransformMakeScale(scale, scale);
     // model出控制器
     [self presentViewController:imagePickerVC animated:YES completion:nil];
 }
